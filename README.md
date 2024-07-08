@@ -5,3 +5,9 @@
 Prometheus でメトリクスを収集し、Grafana で可視化する IoT デバイスの監視サービス
 
 [![architecture](./scenarios/1_grafana-prometheus/docs/images/architecture.png)](./scenarios/1_grafana-prometheus/docs/images/architecture.png)
+
+## [2_iot-hub-messaging](./scenarios/2_iot-hub-messaging/README.md)
+
+Azure IoT Hub でデバイスからクラウドにファイルをアップロードする IoT デバイスの監視サービス
+
+[![architecture](./scenarios/2_iot-hub-messaging/docs/images/architecture.png)](./scenarios/2_iot-hub-messaging/docs/images/architecture.png)
