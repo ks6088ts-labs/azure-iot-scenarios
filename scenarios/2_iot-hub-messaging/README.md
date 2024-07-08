@@ -80,6 +80,28 @@ pip install azure.storage.blob
 python upload_file.py
 ```
 
+## エッジ側のスクリプト開発
+
+opencv-python を使用して、カメラ画像を取得して Azure IoT Hub に送信するスクリプトを開発します。
+
+```shell
+# パッケージの追加インストール
+pip install opencv-python
+
+# 依存関係の出力
+# pip freeze > requirements.txt
+
+# カメラの動作確認のため実行 (動作確認のみであるためスキップしても問題ありません)
+python capture_image.py
+python show_video.py
+
+# Azure Portal からデバイス接続文字列を取得して環境変数に設定
+export IOTHUB_DEVICE_CONNECTION_STRING="HostName=IOT_HUB_NAME.azure-devices.net;DeviceId={DEVICE_ID};SharedAccessKey={SHARED_ACCESS_KEY}"
+
+# ファイルアップロード機能を実装したスクリプトを実行
+python upload_image_direct_method.py
+```
+
 # References
 
 - [Monitoring Azure IoT Hub](https://learn.microsoft.com/en-us/azure/iot-hub/monitor-iot-hub)

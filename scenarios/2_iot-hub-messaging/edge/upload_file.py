@@ -50,7 +50,7 @@ def run_sample(device_client):
     # Upload to blob
     success, result = store_blob(storage_info, PATH_TO_FILE)
 
-    if success == True:
+    if success is True:
         print("Upload succeeded. Result is: \n")
         print(result)
         print()

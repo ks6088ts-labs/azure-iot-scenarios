@@ -9,6 +9,8 @@ deprecation==2.1.0
 idna==3.7
 isodate==0.6.1
 janus==1.0.0
+numpy==2.0.0
+opencv-python==4.10.0.84
 packaging==24.1
 paho-mqtt==1.6.1
 pycparser==2.22
