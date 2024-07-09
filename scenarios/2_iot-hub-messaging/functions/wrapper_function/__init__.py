@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from fastapi import UploadFile
 
 from .blobs import BlobClient
+from .openais import OpenAiClient
 
 load_dotenv()
 
@@ -13,6 +14,12 @@ blob_client = BlobClient(
     account_name=getenv("BLOB_STORAGE_ACCOUNT_NAME", ""),
     container_name=getenv("BLOB_STORAGE_CONTAINER_NAME", ""),
     sas_token=getenv("BLOB_STORAGE_SAS_TOKEN", ""),
+)
+openai_client = OpenAiClient(
+    api_key=getenv("OPENAI_API_KEY", ""),
+    api_version=getenv("OPENAI_API_VERSION", ""),
+    endpoint=getenv("OPENAI_ENDPOINT", ""),
+    gpt_model=getenv("OPENAI_GPT_MODEL", ""),
 )
 
 
@@ -64,4 +71,24 @@ async def upload_blob(
     )
     return {
         "blob_name": blob_name,
+    }
+
+
+@app.post(
+    "/explain_image",
+    status_code=201,
+)
+async def explain_image(
+    file: UploadFile,
+    system_prompt: str = "You are a helpful assistant.",
+    user_prompt: str = "Please explain the attached image.",
+):
+    image = await file.read()
+    response = openai_client.create_chat_completions_with_vision(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        image=image,
+    )
+    return {
+        "response": response,
     }
