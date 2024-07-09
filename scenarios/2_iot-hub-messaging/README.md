@@ -102,6 +102,11 @@ export IOTHUB_DEVICE_CONNECTION_STRING="HostName=IOT_HUB_NAME.azure-devices.net;
 python upload_image_direct_method.py
 ```
 
+## Azure Functions 開発
+
+- [クイックスタート: コマンド ラインから Azure に Python 関数を作成する](https://learn.microsoft.com/ja-jp/azure/azure-functions/create-first-function-cli-python?tabs=linux%2Cbash%2Cazure-cli%2Cbrowser)
+- [Using FastAPI Framework with Azure Functions](https://learn.microsoft.com/en-us/samples/azure-samples/fastapi-on-azure-functions/fastapi-on-azure-functions/)
+
 # References
 
 - [Monitoring Azure IoT Hub](https://learn.microsoft.com/en-us/azure/iot-hub/monitor-iot-hub)
