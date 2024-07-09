@@ -86,6 +86,10 @@ async def capture_image(
     camera = cv2.VideoCapture(
         index=camera_index,
     )  # 0 is the camera index, it can be changed to the camera index of your camera
+
+    # wait seconds to warm up camera: https://hironsan.hatenablog.com/entry/2017/06/08/151239
+    time.sleep(2)
+
     return_value, image = camera.read()
     del camera
     if not return_value:
