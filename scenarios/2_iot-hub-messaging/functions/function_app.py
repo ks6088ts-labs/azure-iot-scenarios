@@ -1,5 +1,4 @@
 import azure.functions as func
-
 from wrapper_function import app as fastapi_app
 
 app = func.AsgiFunctionApp(

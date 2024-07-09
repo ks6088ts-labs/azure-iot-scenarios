@@ -2,9 +2,11 @@ from os import getenv
 
 import fastapi
 from dotenv import load_dotenv
-from fastapi import UploadFile
+from fastapi import UploadFile, status
+from fastapi.responses import JSONResponse
 
 from .blobs import BlobClient
+from .iothubs import IotHubClient
 from .openais import OpenAiClient
 
 load_dotenv()
@@ -20,6 +22,10 @@ openai_client = OpenAiClient(
     api_version=getenv("OPENAI_API_VERSION", ""),
     endpoint=getenv("OPENAI_ENDPOINT", ""),
     gpt_model=getenv("OPENAI_GPT_MODEL", ""),
+)
+iothub_client = IotHubClient(
+    device_connection_string=getenv("IOTHUB_DEVICE_CONNECTION_STRING", ""),
+    connection_string=getenv("IOTHUB_CONNECTION_STRING", ""),
 )
 
 
@@ -92,3 +98,41 @@ async def explain_image(
     return {
         "response": response,
     }
+
+
+@app.get(
+    "/iothub/device_twin",
+    status_code=200,
+)
+async def get_device_twin():
+    device_twin = await iothub_client.get_device_twin()
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content=device_twin,
+    )
+
+
+@app.post(
+    "/iothub/invoke_direct_method",
+    status_code=201,
+)
+async def invoke_direct_method(
+    device_id="device001",
+    method_name="capture_image",
+    payload={"index": "0"},
+):
+    try:
+        response = iothub_client.invoke_direct_method(
+            device_id=device_id,
+            method_name=method_name,
+            payload=payload,
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={"error": str(e)},
+        )
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content=response,
+    )

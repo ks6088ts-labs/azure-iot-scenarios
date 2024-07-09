@@ -97,6 +97,8 @@ python show_video.py
 
 # Azure Portal からデバイス接続文字列を取得して環境変数に設定
 export IOTHUB_DEVICE_CONNECTION_STRING="HostName=IOT_HUB_NAME.azure-devices.net;DeviceId={DEVICE_ID};SharedAccessKey={SHARED_ACCESS_KEY}"
+# PowerShell の場合
+# $env:IOTHUB_DEVICE_CONNECTION_STRING="HostName=IOT_HUB_NAME.azure-devices.net;DeviceId={DEVICE_ID};SharedAccessKey={SHARED_ACCESS_KEY}"
 
 # ファイルアップロード機能を実装したスクリプトを実行
 python upload_image_direct_method.py
@@ -107,6 +109,48 @@ python upload_image_direct_method.py
 - [クイックスタート: コマンド ラインから Azure に Python 関数を作成する](https://learn.microsoft.com/ja-jp/azure/azure-functions/create-first-function-cli-python?tabs=linux%2Cbash%2Cazure-cli%2Cbrowser)
 - [Using FastAPI Framework with Azure Functions](https://learn.microsoft.com/en-us/samples/azure-samples/fastapi-on-azure-functions/fastapi-on-azure-functions/)
 
-# References
+```shell
+cd scenarios/2_iot-hub-messaging/functions/
 
-- [Monitoring Azure IoT Hub](https://learn.microsoft.com/en-us/azure/iot-hub/monitor-iot-hub)
+# 仮想環境のセットアップ
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# API サーバーのローカル実行
+func start
+# http://localhost:7071/docs にアクセスして動作確認
+```
+
+### Azure Functions へのデプロイ
+
+```shell
+cd scenarios/2_iot-hub-messaging/functions/
+
+# Azure Functions へのデプロイ
+bash deploy-azure-functions.sh
+```
+
+### 例: GPT-4o での画像認識
+
+IoT デバイスから取得した画像に対して、GPT-4o を用いた画像認識を用いて群衆カウントを行う。
+画像処理アルゴリズムを変更することなく、プロンプトの変更のみで簡単な試作が可能。
+価値がありそうであればエッジでの画像処理や Azure AI 関連サービスを用いた画像認識を使ってみるなど。
+
+- [Paper With Code > Crowd Counting](https://paperswithcode.com/task/crowd-counting)
+- [Awesome-Crowd-Counting/src/Datasets.md](https://github.com/gjy3035/Awesome-Crowd-Counting/blob/master/src/Datasets.md)
+
+**試行した例**
+
+利用した画像:
+
+[desenzhou/ShanghaiTechDataset](https://github.com/desenzhou/ShanghaiTechDataset) の `ShanghaiTech_Crowd_Counting_Dataset/part_B_final/train_data/images/IMG_86.jpg` を利用
+
+[![crowd_counting_input.jpg](./docs/images/crowd_counting_input.jpg)](./docs/images/crowd_counting_input.jpg)
+
+以下のプロンプトで回答が 22 となった。
+
+- `system_prompt`: "You are an excellent crowd counter",
+- `user_prompt`: "Please count the number of people in the attached image and return result in json format. e.g. If you find three people, return {"num": 3}"
+
+[![crowd_counting_result.png](./docs/images/crowd_counting_result.png)](./docs/images/crowd_counting_result.png)
