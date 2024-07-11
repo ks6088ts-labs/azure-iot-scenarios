@@ -36,15 +36,12 @@ az resource create --id "$res_id/permissionBindings/samplesSub" --properties '{
     "permission":"Subscriber"
 }'
 
-cd sample_client
+# build an app
+make build
+cd sample_client/
 
-# case1: local mosquitto
-cp .env.sample sample_client/.env
-# case2: event grid
-cp .env.eg.sample sample_client/.env
-
-# run getting started binary for Go
-Azure-Samples/MqttApplicationSamples/scenarios/getting_started/go/bin/getting_started .env
+# run an app from a specific directory
+../go/bin/egcli getstarted .env
 ```
 
 [scenarios/getting_started](https://github.com/Azure-Samples/MqttApplicationSamples/tree/main/scenarios/getting_started#create-topic-spaces-and-permission-bindings) を参考に疎通確認をします。

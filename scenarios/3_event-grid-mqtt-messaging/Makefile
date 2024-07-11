@@ -131,3 +131,11 @@ mosquitto: ## setup mosquitto
 mosquitto-start: ## start mosquitto
 	cd _mosquitto \
 		&& mosquitto -c tls.conf
+
+# ---
+# Go
+# ---
+
+.PHONY: build
+build: ## build an app
+	cd go && go build -o ./bin/egcli .
