@@ -11,3 +11,9 @@ Prometheus でメトリクスを収集し、Grafana で可視化する IoT デ�
 Azure IoT Hub を使用して、IoT デバイスとクラウド間でメッセージの送受信を行うサービス
 
 [![architecture](./scenarios/2_iot-hub-messaging/docs/images/architecture.png)](./scenarios/2_iot-hub-messaging/docs/images/architecture.png)
+
+## [3_event-grid-mqtt-messaging](./scenarios/3_event-grid-mqtt-messaging/README.md)
+
+Azure Event Grid を使用して、IoT デバイスとクラウド間で双方向通信を行うサービス
+
+[![architecture](./scenarios/3_event-grid-mqtt-messaging/docs/images/architecture.png)](./scenarios/2_iot-hub-messaging/docs/images/architecture.png)

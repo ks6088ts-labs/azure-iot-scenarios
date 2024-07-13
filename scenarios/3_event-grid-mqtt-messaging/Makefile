@@ -38,26 +38,6 @@ install-deps-dev: ## install dependencies for development
 	@which step || echo "Please install step: https://smallstep.com/docs/step-cli/installation/index.html"
 	@which mosquitto || echo "Please install mosquitto: https://mosquitto.org/download/"
 
-.PHONY: resource-group
-resource-group: ## create Resource Group
-	az group create --name $(RESOURCE_GROUP_NAME) --location $(LOCATION)
-
-.PHONY: event-grid
-event-grid: ## create Event Grid
-		az account set -s $(SUBSCRIPTION_ID)
-		az resource create --id $(RESOURCE_ID) --is-full-object --properties "{\
-			\"properties\": {\
-				\"isZoneRedundant\": true,\
-				\"topicsConfiguration\": {\
-					\"inputSchema\": \"CloudEventSchemaV1_0\"\
-				},\
-				\"topicSpacesConfiguration\": {\
-					\"state\": \"Enabled\"\
-				}\
-			},\
-			\"location\": \"$(LOCATION)\"\
-		}"
-
 .PHONY: create-certificate
 create-certificate: ## create CA
 	step ca init \
@@ -67,50 +47,17 @@ create-certificate: ## create CA
 		--address 127.0.0.1:443 \
 		--provisioner MqttAppSamplesCAProvisioner
 
-.PHONY: create-event-grid-certificate
-create-event-grid-certificate: ## create certificate for Event Grid
-	$(eval capem := $(shell cat ~/.step/certs/intermediate_ca.crt | tr -d "\n"))
-	az resource create \
-		--id "$(RESOURCE_ID)/caCertificates/Intermediate01" \
-		--properties "{\"encodedCertificate\" : \"$(capem)\"}"
-
-.PHONY: delete-event-grid-certificate
-delete-event-grid-certificate: ## create certificate for Event Grid
-	az resource delete \
-		--id "$(RESOURCE_ID)/caCertificates/Intermediate01"
-
 .PHONY: create-client-certificate
 create-client-certificate: ## create client certificate
-	rm -rf $(CLIENT_NAME)
 	mkdir -p $(CLIENT_NAME)
-	cd $(CLIENT_NAME) \
-		&& step certificate create sample_client sample_client.pem sample_client.key \
-			--ca ~/.step/certs/intermediate_ca.crt \
-			--ca-key ~/.step/secrets/intermediate_ca_key \
-			--no-password --insecure \
-			--not-after 2400h \
-		&& cat ~/.step/certs/root_ca.crt ~/.step/certs/intermediate_ca.crt > chain.pem \
-		&& cp ../.env.sample .env
-
-.PHONY: create-event-grid-client
-create-event-grid-client: ## create client for Event Grid
-	az resource create --id "$(RESOURCE_ID)/clients/$(CLIENT_NAME)" --properties "{\
-		\"authenticationName\": \"$(CLIENT_NAME)\",\
-		\"state\": \"Enabled\",\
-		\"clientCertificateAuthentication\": {\
-			\"validationScheme\": \"SubjectMatchesAuthenticationName\"\
-		},\
-		\"attributes\": {\
-			\"type\": \"$(CLIENT_NAME)\"\
-		},\
-		\"description\": \"This is a test publisher client\"\
-	}"
-
-.PHONY: create-event-grid-topic-space
-create-event-grid-topic-space: ## create topic space for Event Grid
-	az resource create --id "$(RESOURCE_ID)/topicSpaces/$(TOPIC_SPACE_NAME)" --properties "{\
-		\"topicTemplates\": [\"sample/#\"]\
-	}"
+	step certificate create sample_client $(CLIENT_NAME)/sample_client.pem $(CLIENT_NAME)/sample_client.key \
+		--ca ~/.step/certs/intermediate_ca.crt \
+		--ca-key ~/.step/secrets/intermediate_ca_key \
+		--no-password --insecure \
+		--not-after 2400h \
+		&& cat ~/.step/certs/root_ca.crt ~/.step/certs/intermediate_ca.crt > $(CLIENT_NAME)/chain.pem \
+		&& cp .env.sample $(CLIENT_NAME)/local.env \
+		&& cp .env.eg.sample $(CLIENT_NAME)/event-grid.env
 
 # ---
 # MOSQUITTO
