@@ -1,6 +1,6 @@
-# iot-hub-messaging
+# event-grid-mqtt-messaging
 
-Azure IoT Hub を使用して、IoT デバイスとクラウド間でメッセージの送受信を行います。
+Azure Event Grid を使用して、IoT デバイスとクラウド間で双方向通信を行います。
 
 ## アーキテクチャ図
 
@@ -8,40 +8,61 @@ Azure IoT Hub を使用して、IoT デバイスとクラウド間でメッセ�
 
 ## インフラ構築
 
-[Setup.md](https://github.com/Azure-Samples/MqttApplicationSamples/blob/main/Setup.md) の手順に従って、各種証明書を作成します。
-ショートカットとして、以下のコマンドを実行します。
+[Setup.md](https://github.com/Azure-Samples/MqttApplicationSamples/blob/main/Setup.md) の手順に従って、各種証明書を作成し、[scenarios/getting_started](https://github.com/Azure-Samples/MqttApplicationSamples/tree/main/scenarios/getting_started#create-topic-spaces-and-permission-bindings) を参考に疎通確認をします。
+手早く実行できるようにコードは [Makefile](./Makefile) に整理して `make` コマンドで実行できるようにしています。
+
+**証明書を作成**
 
 ```shell
-make resource-group
-make event-grid
-
 make create-certificate
-make create-event-grid-certificate
 make create-client-certificate
-make create-event-grid-client
-
-# to dump res_id
-make info
-res_id="/subscriptions/..."
-
-# create permission bindings
-az resource create --id "$res_id/permissionBindings/samplesPub" --properties '{
-    "clientGroupName":"$all",
-    "topicSpaceName":"samples",
-    "permission":"Publisher"
-}'
-az resource create --id "$res_id/permissionBindings/samplesSub" --properties '{
-    "clientGroupName":"$all",
-    "topicSpaceName":"samples",
-    "permission":"Subscriber"
-}'
-
-# build an app
-make build
-cd sample_client/
-
-# run an app from a specific directory
-../go/bin/egcli getstarted .env
 ```
 
-[scenarios/getting_started](https://github.com/Azure-Samples/MqttApplicationSamples/tree/main/scenarios/getting_started#create-topic-spaces-and-permission-bindings) を参考に疎通確認をします。
+**Azure リソースを作成**
+
+[main.parameters.bicepparam](./infra/main.parameters.bicepparam) の `encodedCertificate` パラメータの値を作成した中間 CA 証明書で上書きします。
+以下のコマンドで出力される値をコピーして、 `encodedCertificate` パラメータの値を上書きします(FIXME: 自動化)。
+
+```shell
+cat ~/.step/certs/intermediate_ca.crt | tr -d "\n"
+```
+
+Azure リソースを作成します。
+
+```shell
+cd infra
+make deploy
+```
+
+**MOSQUITTO の設定とサービス起動**
+
+ローカル環境で検証する場合、MOSQUITTO をセットアップして、サービスを起動しておく必要があります。
+
+```shell
+# MOSQUITTO セットアップ
+make mosquitto
+
+# サービスの起動
+make mosquitto-start
+```
+
+**動作検証**
+
+`sample_client/event-grid.env` の MQTT_HOST_NAME を Azure Event Grid のホスト名で上書きします(FIXME: 自動化)。
+
+サンプル CLI を使用して、IoT デバイスからのメッセージを受信します。
+
+```shell
+# CLI のビルド
+go build -C go/ -o bin/egcli
+```
+
+```shell
+cd sample_client
+
+# ローカル環境上にホストされた Mosquitto との通信の場合
+../go/bin/egcli getstarted local.env
+
+# Event Grid との通信の場合
+../go/bin/egcli getstarted event-grid.env
+```
