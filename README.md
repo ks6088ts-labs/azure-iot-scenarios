@@ -1,3 +1,5 @@
+[![slides](https://github.com/ks6088ts/azure-iot-scenarios/actions/workflows/slides.yml/badge.svg?branch=main)](https://github.com/ks6088ts/azure-iot-scenarios/actions/workflows/slides.yml?query=branch%3Amain)
+
 # azure-iot-scenarios
 
 ## [1_grafana-prometheus](./scenarios/1_grafana-prometheus/README.md)

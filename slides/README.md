@@ -9,3 +9,7 @@ To start the slide show:
 Edit the [slides.md](./slides.md) to see the changes.
 
 Learn more about Slidev on [documentations](https://sli.dev/).
+
+# References
+
+- [Slidev > Static Hosting > GitHub Pages](https://sli.dev/guide/hosting#github-pages)

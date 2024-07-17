@@ -1,4 +1,4 @@
-name: Deploy pages
+name: Deploy slides
 
 on:
   workflow_dispatch: {}
@@ -7,8 +7,11 @@ on:
       - main
 
 jobs:
-  deploy:
+  slides:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./slides
 
     permissions:
       contents: read
