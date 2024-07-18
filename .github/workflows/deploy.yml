@@ -27,19 +27,22 @@ jobs:
 
       - name: Setup @antfu/ni
         run: npm i -g @antfu/ni
+        working-directory: slides
 
       - name: Install dependencies
         run: nci
+        working-directory: slides
 
       - name: Build
         run: nr build --base /${{github.event.repository.name}}/
+        working-directory: slides
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: slides/dist
 
   deploy:
     environment:
