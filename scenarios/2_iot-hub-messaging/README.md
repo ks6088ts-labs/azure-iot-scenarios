@@ -13,14 +13,8 @@ Azure IoT Hub を使用して、IoT デバイスとクラウド間でメッセ�
 ```shell
 cd infra
 
-# リソースグループ作成
-make create-resource-group
-
-# CI テスト実行
-make ci-test
-
 # デプロイ
-make deployment-create
+make deploy
 ```
 
 ### 2. 手動設定
