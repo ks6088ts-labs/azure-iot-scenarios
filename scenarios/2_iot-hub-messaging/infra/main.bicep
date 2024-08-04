@@ -23,6 +23,9 @@ param storageAccountName string = '${prefix}sa'
 @description('Specifies the name of the Azure IoT Hub resource.')
 param iotHubName string = '${prefix}iothub'
 
+@description('Specifies the name of the Azure Cosmos DB resource.')
+param cosmosDbName string = '${prefix}cosmosdb'
+
 @description('Specifies the name of the Azure Log Analytics workspace.')
 param logAnalyticsWorkspaceName string = '${prefix}law'
 
@@ -60,6 +63,17 @@ module iotHub './modules/iotHub.bicep' = {
     location: location
     tags: tags
     workspaceId: logAnalytics.outputs.id
+  }
+}
+
+module cosmosDb './modules/cosmosDb.bicep' = {
+  name: 'cosmosDb'
+  params: {
+    name: cosmosDbName
+    location: location
+    tags: tags
+    primaryRegion: location
+    secondaryRegion: 'japanwest'
   }
 }
 

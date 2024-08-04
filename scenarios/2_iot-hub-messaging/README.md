@@ -148,3 +148,23 @@ IoT デバイスから取得した画像に対して、GPT-4o を用いた画像
 - `user_prompt`: "Please count the number of people in the attached image and return result in json format. e.g. If you find three people, return {"num": 3}"
 
 [![crowd_counting_result.png](./docs/images/crowd_counting_result.png)](./docs/images/crowd_counting_result.png)
+
+### Azure Cosmos DB へのデータ保存
+
+Azure Portal から IoT Hub と Cosmos DB を関連付けて、IoT Hub からのデータを Cosmos DB に保存します。
+IoT Hub からのデータを Cosmos DB に保存するため、[IoT HubからCosmos DBに直接データを送れるようになりました(パブリックプレビュー)](https://aadojo.alterbooth.com/entry/2022/12/08/154824) を参考に、`IoT Hub > Hub Settings > Message routing` から Endpoint と Route を設定します。
+
+設定が反映されているかの動作確認のため、[クイック スタート:デバイスから IoT ハブに利用統計情報を送信して Azure CLI で監視する](https://learn.microsoft.com/ja-jp/azure/iot-hub/quickstart-send-telemetry-cli) を参考に、デバイスからメッセージを送信して Cosmos DB に保存されるか確認します。
+
+```shell
+DEVICE_NAME="your-device-name"
+IOTHUB_NAME="your-iot-hub-name"
+
+az iot device simulate -d $DEVICE_NAME -n $IOTHUB_NAME --mc 1
+```
+
+Data Explorer から Cosmos DB の指定の Container にデータが保存されているか確認します。
+
+---
+
+FIXME: [クイック スタート: Bicep を使用して Azure IoT ハブとストレージ アカウントをデプロイする](https://learn.microsoft.com/ja-jp/azure/iot-hub/quickstart-bicep-route-messages) を参考に、Bicep でのデプロイを行う。
