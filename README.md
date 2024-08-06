@@ -19,3 +19,9 @@ Azure IoT Hub を使用して、IoT デバイスとクラウド間でメッセ�
 Azure Event Grid を使用して、IoT デバイスとクラウド間で双方向通信を行うサービス
 
 [![architecture](./scenarios/3_event-grid-mqtt-messaging/docs/images/architecture.png)](./scenarios/2_iot-hub-messaging/docs/images/architecture.png)
+
+## [4_event-grid-mqtt-messaging](./scenarios/4_iot-edge-messaging/README.md)
+
+Azure IoT Edge を使用して、IoT デバイスからクラウドへのメッセージ送信を行うサービス
+
+[![architecture](./scenarios/4_iot-edge-messaging/docs/images/architecture.png)](./scenarios/4_iot-edge-messaging/docs/images/architecture.png)
