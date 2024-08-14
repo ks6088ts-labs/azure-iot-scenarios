@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eux
+
 # Variables
 LOCATION=japaneast
 RANDOM_SUFFIX=$(openssl rand -hex 4)
